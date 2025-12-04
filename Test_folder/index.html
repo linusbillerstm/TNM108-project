@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Movie AI Recommender</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div class="sidebar">
+        <button class="new-chat-btn" onclick="location.reload()">
+            <span>+</span> New Chat
+        </button>
+        <div class="history-list">
+            <div class="history-item">Previous: Sci-Fi Movies</div>
+            <div class="history-item">Previous: 90s Sitcoms</div>
+            <div class="history-item">Previous: Horror Recommendations</div>
+        </div>
+    </div>
+
+    <div class="main-chat">
+        <div class="chat-container" id="chatContainer">
+            
+            <div class="message ai">
+                <div class="avatar ai">AI</div>
+                <div class="message-content">
+                    Hello! I'm your TV-Show Recommender. Tell me what kind of show or movie you're looking for!
+                </div>
+            </div>
+
+        </div>
+
+        <div class="input-area">
+            <div class="input-box">
+                <textarea id="userInput" placeholder="Describe a movie (e.g., 'Sad space movie about a father')..." oninput="autoResize(this)"></textarea>
+                <button id="send-btn" onclick="sendMessage()">
+                    <svg stroke="currentColor" fill="none" stroke-width="2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" height="20" width="20" xmlns="http://www.w3.org/2000/svg"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
