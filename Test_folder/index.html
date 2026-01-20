@@ -9,35 +9,72 @@
 <body>
 
     <div class="sidebar">
-        <button class="new-chat-btn" onclick="location.reload()">
-            <span>+</span> New Chat
-        </button>
-        <div class="history-list">
-            <div class="history-item">Previous: Sci-Fi Movies</div>
-            <div class="history-item">Previous: 90s Sitcoms</div>
-            <div class="history-item">Previous: Horror Recommendations</div>
+        <div class="sidebar-top">
+            <button class="new-chat-btn" onclick="location.reload()">
+                <span>+</span> New Chat
+            </button>
+            <div class="history-list">
+                <div class="history-item">Recent: Sci-Fi Movies</div>
+                <div class="history-item">Recent: 90s Sitcoms</div>
+            </div>
+        </div>
+
+        <div class="sidebar-bottom">
+            <button id="openLoginBtn" class="login-btn">
+                <svg stroke="currentColor" fill="none" stroke-width="2" viewBox="0 0 24 24" height="16" width="16" xmlns="http://www.w3.org/2000/svg"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"></path><polyline points="10 17 15 12 10 7"></polyline><line x1="15" y1="12" x2="3" y2="12"></line></svg>
+                Log In
+            </button>
         </div>
     </div>
 
     <div class="main-chat">
         <div class="chat-container" id="chatContainer">
-            
             <div class="message ai">
                 <div class="avatar ai">AI</div>
                 <div class="message-content">
-                    Hello! I'm your TV-Show Recommender. Tell me what kind of show or movie you're looking for!
+                    Hello! I'm your TV-Show Recommender. Log in to save your history, or just start typing!
                 </div>
             </div>
-
         </div>
 
         <div class="input-area">
             <div class="input-box">
-                <textarea id="userInput" placeholder="Describe a movie (e.g., 'Sad space movie about a father')..." oninput="autoResize(this)"></textarea>
+                <textarea id="userInput" placeholder="Describe a movie..." oninput="autoResize(this)"></textarea>
+                <select id="ai-selector">
+                    <option id="ai-selector" value="model1">ChatGPT</option>
+                    <option id="ai-selector" value="model2">ChatPgt Go</option>
+                    <option id="ai-selector" value="model3">My Custom Python Model</option>
+                </select>
                 <button id="send-btn" onclick="sendMessage()">
                     <svg stroke="currentColor" fill="none" stroke-width="2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" height="20" width="20" xmlns="http://www.w3.org/2000/svg"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
                 </button>
             </div>
+        </div>
+    </div>
+
+    <div id="loginModal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn">&times;</span>
+            <h2>Welcome Back</h2>
+            <form id="loginForm" action="/login" method="POST">
+                <input type="text" name="username" placeholder="Username" required>
+                <input type="password" name="password" placeholder="Password" required>
+                <button type="submit" class="modal-submit-btn">Log In</button>
+            </form>
+            <p class="switch-text">Don't have an account? <a href="#" id="switchToRegister">Create Account</a></p>
+        </div>
+    </div>
+
+    <div id="registerModal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn">&times;</span>
+            <h2>Create Account</h2>
+            <form id="registerForm" action="/register" method="POST">
+                <input type="text" name="username" placeholder="Choose a Username" required>
+                <input type="password" name="password" placeholder="Choose a Password" required>
+                <button type="submit" class="modal-submit-btn">Sign Up</button>
+            </form>
+            <p class="switch-text">Already have an account? <a href="#" id="switchToLogin">Log In</a></p>
         </div>
     </div>
 

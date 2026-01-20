@@ -1,13 +1,57 @@
+/* --- MODAL LOGIC (New Stuff) --- */
+
+const loginModal = document.getElementById('loginModal');
+const registerModal = document.getElementById('registerModal');
+const openLoginBtn = document.getElementById('openLoginBtn');
+const closeBtns = document.querySelectorAll('.close-btn');
+const switchToRegister = document.getElementById('switchToRegister');
+const switchToLogin = document.getElementById('switchToLogin');
+
+// 1. Open Login Modal
+if (openLoginBtn) {
+    openLoginBtn.addEventListener('click', () => {
+        loginModal.style.display = 'block';
+    });
+}
+
+// 2. Switch from Login to Register
+switchToRegister.addEventListener('click', (e) => {
+    e.preventDefault(); 
+    loginModal.style.display = 'none';
+    registerModal.style.display = 'block';
+});
+
+// 3. Switch from Register to Login
+switchToLogin.addEventListener('click', (e) => {
+    e.preventDefault();
+    registerModal.style.display = 'none';
+    loginModal.style.display = 'block';
+});
+
+// 4. Close Modals (Clicking 'X')
+closeBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+        loginModal.style.display = 'none';
+        registerModal.style.display = 'none';
+    });
+});
+
+// 5. Close Modals (Clicking outside the box)
+window.addEventListener('click', (e) => {
+    if (e.target == loginModal) loginModal.style.display = 'none';
+    if (e.target == registerModal) registerModal.style.display = 'none';
+});
+
+
+/* --- CHAT LOGIC (Old Stuff) --- */
 const chatContainer = document.getElementById('chatContainer');
 const userInput = document.getElementById('userInput');
 
-// Auto-resize the text area
 function autoResize(textarea) {
     textarea.style.height = 'auto'; 
     textarea.style.height = textarea.scrollHeight + 'px';
 }
 
-// Add a message to the UI
 function appendMessage(text, sender) {
     const msgDiv = document.createElement('div');
     msgDiv.classList.add('message', sender);
@@ -23,36 +67,29 @@ function appendMessage(text, sender) {
     msgDiv.appendChild(avatarDiv);
     msgDiv.appendChild(contentDiv);
     chatContainer.appendChild(msgDiv);
-    
-    // Auto scroll to bottom
     chatContainer.scrollTop = chatContainer.scrollHeight;
 }
 
-// Function called when "Send" is clicked
 function sendMessage() {
     const text = userInput.value.trim();
     if (text === "") return;
 
-    // 1. Show User Message
     appendMessage(text, 'user');
     userInput.value = "";
-    userInput.style.height = '24px'; // Reset height
+    userInput.style.height = '24px';
 
-    // 2. Simulate AI Thinking (Placeholder)
     const loadingDiv = document.createElement('div');
     loadingDiv.classList.add('message', 'ai');
     loadingDiv.innerHTML = `<div class="avatar ai">AI</div><div class="message-content typing-indicator">Thinking</div>`;
     chatContainer.appendChild(loadingDiv);
     chatContainer.scrollTop = chatContainer.scrollHeight;
 
-    // 3. Simulate AI Response (Delete this part when you connect Python!)
     setTimeout(() => {
         chatContainer.removeChild(loadingDiv);
-        appendMessage("This is where your Python Qwen3 model response will go! It works!", 'ai');
-    }, 1500);
+        appendMessage("I'm ready to connect to the backend!", 'ai');
+    }, 1000);
 }
 
-// Allow pressing "Enter" to send
 userInput.addEventListener("keypress", function(event) {
     if (event.key === "Enter" && !event.shiftKey) {
         event.preventDefault();
