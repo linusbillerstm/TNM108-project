@@ -1,179 +1,334 @@
-/* --- GLOBAL VARIABLES --- */
-:root {
-    --bg-color: #343541;
-    --sidebar-color: #202123;
-    --chat-box-ai: #444654;
-    --text-color: #ececf1;
-    --input-bg: #40414f;
-    --accent-color: #10a37f;
-    --hover-color: #2b2c2f;
+/* --- RESET & GRUNDLÄGGANDE --- */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
 }
 
 body {
-    margin: 0;
-    padding: 0;
+    background-color: #343541; /* Mörk bakgrund (ChatGPT-style) */
+    color: #ececf1;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background-color: var(--bg-color);
-    color: var(--text-color);
     display: flex;
     height: 100vh;
     overflow: hidden;
 }
 
-/* --- SIDEBAR LAYOUT --- */
+/* --- SIDEBAR (VÄNSTER MENY) --- */
 .sidebar {
     width: 260px;
-    background-color: var(--sidebar-color);
+    background-color: #202123;
     display: flex;
     flex-direction: column;
-    justify-content: space-between; /* Pushes top and bottom apart */
     padding: 10px;
     border-right: 1px solid #4d4d4f;
+    flex-shrink: 0; /* Förhindra att den krymper */
 }
 
-/* Login Button Styles */
-.login-btn {
+.sidebar-top {
+    flex: 1;
+}
+
+.new-chat-btn {
     width: 100%;
+    padding: 10px;
     background-color: transparent;
     border: 1px solid #565869;
     color: white;
-    padding: 12px;
     border-radius: 5px;
+    text-align: left;
     cursor: pointer;
+    transition: 0.2s;
     display: flex;
     align-items: center;
     gap: 10px;
-    transition: 0.3s;
-    font-size: 0.9rem;
 }
 
-.login-btn:hover {
-    background-color: var(--hover-color);
+.new-chat-btn:hover {
+    background-color: #2a2b32;
 }
 
-/* Sidebar Top Elements */
-.new-chat-btn {
-    width: 100%;
-    border: 1px solid #565869;
-    border-radius: 5px;
-    padding: 12px;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    cursor: pointer;
-    color: white;
-    background: transparent;
-    margin-bottom: 20px;
-    transition: 0.3s;
+.history-list {
+    margin-top: 20px;
 }
-.new-chat-btn:hover { background-color: var(--hover-color); }
 
 .history-item {
     padding: 10px;
-    border-radius: 5px;
-    cursor: pointer;
+    color: #ececf1;
     font-size: 0.9em;
-    color: #c5c5d2;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-.history-item:hover { background-color: var(--hover-color); }
-
-/* --- MAIN CHAT & MESSAGES --- */
-.main-chat { flex: 1; display: flex; flex-direction: column; position: relative; }
-.chat-container { flex: 1; overflow-y: auto; padding-bottom: 120px; }
-
-.message { display: flex; padding: 25px; gap: 20px; line-height: 1.6; border-bottom: 1px solid rgba(0,0,0,0.1); }
-.message.ai { background-color: var(--chat-box-ai); }
-
-.avatar { width: 30px; height: 30px; border-radius: 4px; display: flex; align-items: center; justify-content: center; font-weight: bold; flex-shrink: 0; }
-.avatar.user { background-color: #5436da; }
-.avatar.ai { background-color: var(--accent-color); }
-
-.message-content { max-width: 800px; width: 100%; }
-
-/* --- INPUT AREA --- */
-.input-area { position: absolute; bottom: 0; left: 0; width: 100%; background: linear-gradient(180deg, rgba(53,53,65,0), var(--bg-color) 40%); padding: 20px 0 40px 0; display: flex; justify-content: center; }
-.input-box { background-color: var(--input-bg); border-radius: 12px; box-shadow: 0 0 15px rgba(0,0,0,0.1); width: 70%; max-width: 800px; display: flex; align-items: center; padding: 10px 15px; border: 1px solid rgba(255,255,255,0.1); }
-textarea { background: transparent; border: none; color: white; font-family: inherit; font-size: 1rem; width: 100%; resize: none; max-height: 200px; height: 24px; outline: none; padding: 0; margin-right: 10px; }
-#ai-selector {background-color: var(--input-bg); background: transparent; border: none; width: 15%; cursor: pointer; color: #ccc; padding: 5px; display: flex; align-items: center; }
-#ai-selector:hover { color: white; }
-#send-btn { background: transparent; border: none; cursor: pointer; color: #ccc; padding: 5px; display: flex; align-items: center; }
-#send-btn:hover { color: white; }
-
-/* --- MODAL (POPUP) STYLES --- */
-.modal {
-    display: none; /* Hidden by default */
-    position: fixed;
-    z-index: 1000;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0,0,0,0.7); /* Black w/ opacity */
-    backdrop-filter: blur(5px);
-}
-
-.modal-content {
-    background-color: var(--bg-color);
-    margin: 10% auto;
-    padding: 30px;
-    border: 1px solid #565869;
-    border-radius: 10px;
-    width: 350px;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.5);
-    position: relative;
-    text-align: center;
-}
-
-.modal-content h2 { margin-top: 0; margin-bottom: 20px; }
-
-.modal-content input {
-    width: 90%;
-    padding: 12px;
-    margin: 10px 0;
+    cursor: pointer;
     border-radius: 5px;
+}
+
+.history-item:hover {
+    background-color: #2a2b32;
+}
+
+.sidebar-bottom {
+    border-top: 1px solid #4d4d4f;
+    padding-top: 10px;
+}
+
+.login-btn {
+    width: 100%;
+    padding: 10px;
+    background-color: transparent;
+    color: #ececf1;
+    border: none;
+    text-align: left;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+.login-btn:hover {
+    background-color: #343541;
+}
+
+/* --- HUVUD-CHATTEN --- */
+.main-chat {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+}
+
+.chat-container {
+    flex: 1;
+    overflow-y: auto;
+    padding-bottom: 150px; /* Plats för input-rutan */
+    scroll-behavior: smooth;
+}
+
+/* Scrollbar styling */
+.chat-container::-webkit-scrollbar {
+    width: 8px;
+}
+.chat-container::-webkit-scrollbar-thumb {
+    background-color: #565869;
+    border-radius: 4px;
+}
+
+/* MEDDELANDEN */
+.message {
+    display: flex;
+    padding: 25px;
+    gap: 20px;
+    line-height: 1.6;
+    border-bottom: 1px solid rgba(0,0,0,0.1);
+}
+
+/* --- MEDDELANDEN (Uppdaterad Design) --- */
+.message {
+    display: flex;
+    padding: 20px;
+    gap: 20px;
+    line-height: 1.6;
+    margin: 15px 20px; /* Lite luft runt varje meddelande */
+    border-radius: 8px; /* Rundade hörn */
+    border: 1px solid transparent; /* Osynlig ram som standard */
+}
+
+/* AI-meddelanden */
+.message.ai {
+    background-color: #444654;
+    border: 1px solid #3e3f4b; /* En subtil kantlinje */
+}
+
+/* ANVÄNDAR-meddelanden - Nu med snygg ruta! */
+.message.user {
+    background-color: #40414f; /* Samma färg som input-rutan */
+    border: 1px solid #565869; /* Ljusare kantlinje för kontrast */
+    color: #fff;
+}
+
+.avatar {
+    width: 35px; /* Lite större avatar */
+    height: 35px;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 14px;
+    flex-shrink: 0;
+}
+
+.avatar.user {
+    background-color: #5436DA;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2); /* Lite skugga på avataren */
+}
+
+.avatar.ai {
+    background-color: #10a37f;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+
+.message-content {
+    max-width: 100%;
+    width: 100%;
+    align-self: center; /* Centrera texten vertikalt mot avataren */
+}
+
+/* --- INPUT OMRÅDET (LÄNGST NER) --- */
+.input-area {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background-color: #343541; /* Täcker text bakom */
+    padding: 20px;
+    display: flex;
+    justify-content: center;
+    background: linear-gradient(180deg, rgba(52,53,65,0) 0%, #343541 20%);
+}
+
+.input-box {
+    width: 100%;
+    max-width: 768px;
+    background-color: #40414f;
+    border-radius: 12px;
+    display: flex;
+    padding: 10px 15px;
+    box-shadow: 0 0 15px rgba(0,0,0,0.1);
+    align-items: flex-end;
     border: 1px solid #565869;
-    background-color: var(--input-bg);
+}
+
+.input-box textarea {
+    background: transparent;
+    border: none;
     color: white;
+    width: 100%;
+    resize: none;
+    max-height: 200px;
+    font-family: inherit;
+    font-size: 16px;
+    padding: 5px 0;
     outline: none;
 }
 
-.modal-content input:focus { border-color: var(--accent-color); }
+.model-selector {
+    background-color: #343541;
+    color: #ececf1;
+    border: 1px solid #565869;
+    border-radius: 4px;
+    padding: 8px;
+    margin-right: 10px; /* Lite mellanrum till knappen */
+    margin-bottom: 5px; /* Justera så den linjerar snyggt */
+    cursor: pointer;
+    font-family: inherit;
+}
 
-.modal-submit-btn {
+.model-selector:focus {
+    outline: none;
+    border-color: #10a37f;
+}
+.input-box button {
+    background: transparent;
+    border: none;
+    color: #ececf1;
+    cursor: pointer;
+    padding: 5px;
+    border-radius: 4px;
+}
+
+.input-box button:hover {
+    background-color: #202123;
+}
+
+/* --- MODALER (LOGIN & REGISTER) --- */
+/* Detta är det viktigaste för att din inloggning ska synas */
+.modal {
+    display: none; /* Dölj som standard */
+    position: fixed; 
+    z-index: 1000; 
+    left: 0;
+    top: 0;
+    width: 100%; 
+    height: 100%; 
+    overflow: auto; 
+    background-color: rgba(0,0,0,0.6); /* Mörk genomskinlig bakgrund */
+    backdrop-filter: blur(2px);
+}
+
+.modal-content {
+    position: relative;
+    background-color: #343541;
+    margin: 10% auto; /* Centrera vertikalt och horisontellt */
+    padding: 30px;
+    border: 1px solid #565869;
+    width: 90%;
+    max-width: 400px; /* Inte för bred */
+    border-radius: 8px;
+    color: white;
+    text-align: center;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.5);
+}
+
+.modal-content h2 {
+    margin-bottom: 20px;
+}
+
+.modal input {
     width: 100%;
     padding: 12px;
-    background-color: var(--accent-color);
+    margin: 8px 0;
+    background-color: #40414f;
+    border: 1px solid #565869;
     color: white;
-    border: none;
-    border-radius: 5px;
-    font-size: 1rem;
-    cursor: pointer;
-    margin-top: 10px;
-    font-weight: bold;
+    border-radius: 4px;
+    font-size: 16px;
 }
-.modal-submit-btn:hover { background-color: #0e8e6d; }
 
-.switch-text { font-size: 0.9rem; margin-top: 15px; color: #c5c5d2; }
-.switch-text a { color: var(--accent-color); text-decoration: none; }
-.switch-text a:hover { text-decoration: underline; }
+.modal input:focus {
+    outline: none;
+    border-color: #10a37f;
+}
 
-.close-btn {
-    position: absolute;
-    top: 10px;
-    right: 20px;
+/* --- STÄNG-KNAPP (KRYSS) --- */
+.close {
     color: #aaa;
+    float: right;
     font-size: 28px;
     font-weight: bold;
     cursor: pointer;
+    position: absolute; /* Gör att vi kan placera den exakt */
+    right: 20px;
+    top: 10px;
 }
-.close-btn:hover { color: white; }
 
-/* Typing Animation */
-.typing-indicator::after {
-    content: '●';
-    animation: blink 1s infinite;
+.close:hover,
+.close:focus {
+    color: #fff;
+    text-decoration: none;
+    cursor: pointer;
 }
-@keyframes blink { 0% {opacity: 0.2;} 50% {opacity: 1;} 100% {opacity: 0.2;} }
+
+.submit-btn {
+    background-color: #10a37f;
+    color: white;
+    padding: 12px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    width: 100%;
+    margin-top: 15px;
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.submit-btn:hover {
+    background-color: #0d8a6a;
+}
+
+.modal a {
+    color: #10a37f;
+    text-decoration: none;
+    font-size: 0.9em;
+}
+
+.modal p {
+    margin-top: 15px;
+    font-size: 0.9em;
+    color: #ccc;
+}
