@@ -14,9 +14,8 @@ def init(df):
     global model, embeddings, df_ref
     df_ref = df
     
-    print("   [NOMIC] Laddar modell och embeddings...")
     try:
-        # Ladda modellen (Samma som i din fil)
+        # ladda data
         model = SentenceTransformer("nomic-ai/nomic-embed-text-v1.5", trust_remote_code=True)
         
         # backa en mapp där embeddings.npy finns
@@ -31,7 +30,7 @@ def init(df):
 def search(query, top_k=5):
     if model is None or embeddings is None: return []
 
-    # Lägg till prefixet som i din fil
+    # lägg till prefixet som i din fil
     search_query = f"search_query: {query}"
     
     # Skapa embedding för frågan

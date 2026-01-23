@@ -14,8 +14,7 @@ df_ref = None
 
 def normalize(scores):
     """Hjälpfunktion för att skala värden till 0-1"""
-    if np.max(scores) == np.min(scores):
-        return scores
+    if np.max(scores) == np.min(scores):return scores
     return (scores - np.min(scores)) / (np.max(scores) - np.min(scores))
 
 def init(df):
@@ -84,8 +83,12 @@ def search(query, top_k=3):
         results.append({
             "title": row['title'],
             "year": str(row['year']),
+            "rating": row['imdb_rating'],
             "reason": f"Hybrid Match ({int(score*100)}% säkerhet) - Kombinerar ord och mening."
         })
+    #sorterar baserat på IMDB ranking
+    results.sort(key=lambda x: x['rating'], reverse=True)
+    
         
     if not results:
         return [{"title": "Ingen träff", "year": 0, "reason": "Ingen serie matchade tillräckligt bra (över 35%)."}]
