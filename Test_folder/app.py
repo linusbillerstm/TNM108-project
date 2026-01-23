@@ -20,23 +20,7 @@ def start_app():
         # 1. Läs in CSV-filen
         base_dir = os.path.dirname(os.path.abspath(__file__))
         csv_path = os.path.join(base_dir, 'sorted_shows.csv')
-        df = pd.read_csv(csv_path)
-        
-        # --- FIX 2: Skapa 'combined_text' om den saknas ---
-        # Vi slår ihop Title + Genre + Storyline till en lång text
-        if 'combined_text' not in df.columns:
-            print("   ⚠️ Skapar kolumnen 'combined_text'...")
-            # Vi fyller tomma värden med tom sträng så det inte kraschar
-            df['title'] = df['title'].fillna('')
-            df['genre'] = df['genre'].fillna('')
-            df['storyline'] = df['storyline'].fillna('')
-            
-            # Skapa den kombinerade texten
-            df['combined_text'] = (
-                df['title'] + " " + 
-                df['genre'] + " " + 
-                df['storyline']
-            )
+        df = pd.read_csv(csv_path)     
         
         # Säkerställ att inga NaNs finns kvar
         df['combined_text'] = df['combined_text'].fillna('') 

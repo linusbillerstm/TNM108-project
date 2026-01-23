@@ -2,6 +2,9 @@ import os
 import json
 from google import genai
 from google.genai import types
+from dotenv import load_dotenv
+
+load_dotenv()
 
 client = None
 shows_context = []
@@ -9,7 +12,7 @@ shows_context = []
 def init(df):
     global client, shows_context
     # HÄR ÄR DIN NYCKEL (Jag tog den från din uppladdade fil)
-    api_key = "AIzaSyBNVnoRHvXyIgLb90Odx66sbV91ngN9I8I" 
+    api_key = os.getenv("GEMINI_API_KEY")
     
     if api_key:
         client = genai.Client(api_key=api_key)
