@@ -332,3 +332,98 @@ body {
     font-size: 0.9em;
     color: #ccc;
 }
+
+.rec-card {
+    background: rgba(255,255,255,0.05);
+    padding: 15px;
+    margin-bottom: 12px;
+    border-radius: 8px;
+    border: 1px solid #565869;
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.2s;
+}
+
+.rec-card:hover {
+    background: rgba(255,255,255,0.08);
+}
+
+/* Poäng-rutan i hörnet */
+.score-badge {
+    position: absolute;
+    top: 0;
+    right: 0;
+    color: black;
+    font-weight: bold;
+    font-size: 0.8em;
+    padding: 4px 8px;
+    border-bottom-left-radius: 8px;
+}
+
+/* Färger för poäng (Dessa byter vi med JS) */
+.score-high { background-color: #10a37f; } /* Grön */
+.score-mid  { background-color: #eab308; } /* Gul */
+.score-low  { background-color: #ef4444; } /* Röd */
+
+/* Layout inuti kortet */
+.rec-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-top: 5px;
+}
+
+.rec-text {
+    max-width: 80%;
+}
+
+.rec-title {
+    margin: 0;
+    color: #fff;
+    font-size: 1.1em;
+}
+
+.year-text {
+    font-size: 0.8em;
+    color: #999;
+    font-weight: normal;
+    margin-left: 5px;
+}
+
+.rec-year {
+    font-size: 0.8em;
+    color: #999;
+    font-weight: normal;
+}
+
+.rec-reason {
+    margin-top: 8px;
+    font-size: 0.9em;
+    color: #ccc;
+    line-height: 1.4;
+}
+
+/* Gilla-knappen */
+.like-btn {
+    background: transparent;
+    border: 1px solid #565869;
+    color: white;
+    cursor: pointer;
+    padding: 8px 12px;
+    border-radius: 4px;
+    transition: all 0.2s;
+    white-space: nowrap;
+    margin-top: 20px;
+}
+
+.like-btn:hover {
+    background-color: rgba(255,255,255,0.1);
+}
+
+/* När knappen är klickad (Sparad) */
+.like-btn.saved {
+    border-color: #10a37f;
+    color: #10a37f;
+    cursor: default;
+    background-color: rgba(16, 163, 127, 0.1);
+}

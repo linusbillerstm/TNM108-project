@@ -40,6 +40,7 @@ def search(query, top_k=5):
     
     results = []
     for idx in top_indices:
+        score_percent = int(similarity_scores[idx] * 100)
         # Din logik för att skippa 0-matchningar
         if similarity_scores[idx] == 0:
             continue
@@ -47,8 +48,9 @@ def search(query, top_k=5):
         row = df_ref.iloc[idx]
         results.append({
             "title": row['title'],
-            "year": int(row['year']), # Konvertera till int för snyggare JSON
-            "reason": f"Matchar nyckelord i: {str(row['genre'])}"
+            "year": str(row['year']), # Konvertera till int för snyggare JSON
+            "reason": f"Matchar nyckelord i: {str(row['genre'])}",
+            "score": score_percent
         })
     
     return results

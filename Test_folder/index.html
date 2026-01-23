@@ -27,53 +27,72 @@
 
     <div class="main-chat">
         <div class="chat-container" id="chatContainer">
-    <div class="message ai">
-        <div class="message-content" id="welcome-msg">
-            Hej! Logga in för att spara serier, eller fråga direkt.
+            <div class="message ai">
+                <div class="message-content" id="welcome-msg">
+                    Hej! Logga in för att spara serier, eller fråga direkt.
+                </div>
+            </div>
         </div>
-    </div>
-</div>
 
         <div class="input-area">
             <div class="input-box">
                 <textarea id="userInput" placeholder="Beskriv en serie..." rows="1" oninput="autoResize(this)"></textarea>
+                
                 <select id="modelSelect" class="model-selector">
-                    <option value="gemini">Gemini (LLM)</option>
-                    <option value="tfidf">TF-IDF (Keyword)</option>
+                    <option value="tfidf">TF-IDF (Nyckelord)</option>
                     <option value="nomic">Nomic (Vector)</option>
+                    <option value="hybrid">Hybrid (Best of both)</option>
+                    <option value="gemini">Gemini (LLM)</option>
                 </select>
+                
                 <button id="send-btn" onclick="sendMessage()">Send</button>
             </div>
         </div>
     </div>
 
-<div id="loginModal" class="modal">
-    <div class="modal-content">
-        <span class="close">&times;</span>
-        
-        <h2>Welcome Back</h2>
-        <form id="loginForm">
-            <input type="text" name="username" placeholder="Username" required>
-            <input type="password" name="password" placeholder="Password" required>
-            <button type="submit" class="submit-btn">Log In</button>
-        </form>
-        <p>Don't have an account? <a href="#" id="switchToRegister">Sign up here</a></p>
+    <div id="loginModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Welcome Back</h2>
+            <form id="loginForm">
+                <input type="text" name="username" placeholder="Username" required>
+                <input type="password" name="password" placeholder="Password" required>
+                <button type="submit" class="submit-btn">Log In</button>
+            </form>
+            <p>Don't have an account? <a href="#" id="switchToRegister">Sign up here</a></p>
+        </div>
     </div>
-</div>
 
     <div id="registerModal" class="modal" style="display:none;">
-    <div class="modal-content">
-        <span class="close">&times;</span>
-        
-        <h2>Create Account</h2>
-        <form id="registerForm">
-            <input type="text" name="username" placeholder="Choose Username" required>
-            <input type="password" name="password" placeholder="Choose Password" required>
-            <button type="submit" class="submit-btn">Sign Up</button>
-        </form>
-        <p>Already have an account? <a href="#" id="switchToLogin">Log in here</a></p>
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Create Account</h2>
+            <form id="registerForm">
+                <input type="text" name="username" placeholder="Choose Username" required>
+                <input type="password" name="password" placeholder="Choose Password" required>
+                <button type="submit" class="submit-btn">Sign Up</button>
+            </form>
+            <p>Already have an account? <a href="#" id="switchToLogin">Log in here</a></p>
+        </div>
     </div>
-</div>
+
+    <template id="card-template">
+        <div class="rec-card">
+            <div class="score-badge"></div>
+        
+            <div class="rec-content">
+                <div class="rec-text">
+                    <h3 class="rec-title">
+                        <span class="title-text"></span> 
+                        <span class="year-text"></span>
+                    </h3>
+                    <p class="rec-reason"></p>
+                </div>
+            
+                <button class="like-btn">👍 Gilla</button>
+            </div>
+        </div>
+    </template>
 
     <script src="script.js"></script>
 </body>

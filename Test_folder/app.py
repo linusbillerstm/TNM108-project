@@ -1,37 +1,64 @@
 import pandas as pd
 import sqlite3
 import os
+import time
+import random
 from flask import Flask, render_template, request, jsonify, session
 from werkzeug.security import generate_password_hash, check_password_hash
 
 # --- IMPORTERA DINA NYA MODELLER ---
-from ai_models import tfidf_model, nomic_model, gemini_model
+from ai_models import tfidf_model, nomic_model, gemini_model, hybrid_model
 
-app = Flask(__name__, template_folder='.', static_folder='static') # Notera static mappen
+# --- FIX 1: Ändra så Flask hittar CSS/JS i samma mapp ---
+app = Flask(__name__, template_folder='.', static_folder='.', static_url_path='')
 app.secret_key = "super_hemlig_nyckel"
 
-# --- INITIERING (Körs en gång vid start) ---
+# --- INITIERING AV AI (Körs en gång vid start) ---
 def start_app():
     print("⏳ Laddar dataset och AI-modeller...")
     try:
-        # Läs in CSV-filen en gång för alla
-        df = pd.read_csv('sorted_shows.csv')
-        df['combined_text'] = df['combined_text'].fillna('') # Fixa tomma rader
+        # 1. Läs in CSV-filen
+        base_dir = os.path.dirname(os.path.abspath(__file__))
+        csv_path = os.path.join(base_dir, 'sorted_shows.csv')
+        df = pd.read_csv(csv_path)
         
-        # Skicka datan till varje modell så de kan förbereda sig
+        # --- FIX 2: Skapa 'combined_text' om den saknas ---
+        # Vi slår ihop Title + Genre + Storyline till en lång text
+        if 'combined_text' not in df.columns:
+            print("   ⚠️ Skapar kolumnen 'combined_text'...")
+            # Vi fyller tomma värden med tom sträng så det inte kraschar
+            df['title'] = df['title'].fillna('')
+            df['genre'] = df['genre'].fillna('')
+            df['storyline'] = df['storyline'].fillna('')
+            
+            # Skapa den kombinerade texten
+            df['combined_text'] = (
+                df['title'] + " " + 
+                df['genre'] + " " + 
+                df['storyline']
+            )
+        
+        # Säkerställ att inga NaNs finns kvar
+        df['combined_text'] = df['combined_text'].fillna('') 
+        
+        # 2. Skicka datan till varje modell
         tfidf_model.init(df)
         nomic_model.init(df)
         gemini_model.init(df)
+        hybrid_model.init(df)
         
         print("✅ Allt laddat och klart!")
     except Exception as e:
-        print(f"❌ Kritiskt fel vid start: {e}")
+        # Skriv ut mer detaljerat felmeddelande
+        print(f"❌ Kritiskt fel vid start av AI-modeller: {e}")
+        import traceback
+        traceback.print_exc()
 
-# Kör initieringen
+# Kör initieringen direkt
 with app.app_context():
     start_app()
 
-# --- DATABAS (Behåll din gamla kod här) ---
+# --- DATABAS HANTERING ---
 def get_db():
     conn = sqlite3.connect('series_data.db')
     conn.row_factory = sqlite3.Row
@@ -41,10 +68,16 @@ def init_db():
     conn = get_db()
     c = conn.cursor()
     c.execute('''CREATE TABLE IF NOT EXISTS users 
-                 (id INTEGER PRIMARY KEY AUTOINCREMENT, username TEXT UNIQUE, password TEXT)''')
+                 (id INTEGER PRIMARY KEY AUTOINCREMENT, 
+                  username TEXT UNIQUE NOT NULL, 
+                  password TEXT NOT NULL)''')
+    
     c.execute('''CREATE TABLE IF NOT EXISTS liked_series 
-                 (id INTEGER PRIMARY KEY AUTOINCREMENT, user_id INTEGER, title TEXT, 
-                  FOREIGN KEY(user_id) REFERENCES users(id), UNIQUE(user_id, title))''')
+                 (id INTEGER PRIMARY KEY AUTOINCREMENT, 
+                  user_id INTEGER, 
+                  title TEXT, 
+                  FOREIGN KEY(user_id) REFERENCES users(id), 
+                  UNIQUE(user_id, title))''')
     conn.commit()
     conn.close()
 
@@ -56,14 +89,35 @@ init_db()
 def index():
     return render_template('index.html')
 
-# (Behåll dina rutor för login/register/logout/like här - de ändras inte)
-# ... Klistra in dem från din förra app.py ...
-# Jag kortar ner koden här för överskådlighet, men du ska ha kvar dem!
+@app.route('/register', methods=['POST'])
+def register():
+    data = request.json
+    username = data.get('username')
+    password = data.get('password')
+    hashed_pw = generate_password_hash(password)
+    try:
+        conn = get_db()
+        conn.execute("INSERT INTO users (username, password) VALUES (?, ?)", (username, hashed_pw))
+        conn.commit()
+        conn.close()
+        return jsonify({"status": "success", "message": "Konto skapat! Logga in."})
+    except sqlite3.IntegrityError:
+        return jsonify({"status": "error", "message": "Användarnamnet upptaget."})
 
 @app.route('/login', methods=['POST'])
 def login():
-    # ... din login kod ...
-    return jsonify({"status": "success", "username": "TestUser"}) # Placeholder
+    data = request.json
+    username = data.get('username')
+    password = data.get('password')
+    conn = get_db()
+    user = conn.execute("SELECT * FROM users WHERE username = ?", (username,)).fetchone()
+    conn.close()
+    if user and check_password_hash(user['password'], password):
+        session['user_id'] = user['id']
+        session['username'] = user['username']
+        return jsonify({"status": "success", "username": user['username']})
+    else:
+        return jsonify({"status": "error", "message": "Fel användarnamn eller lösenord"})
 
 @app.route('/logout', methods=['POST'])
 def logout():
@@ -76,36 +130,53 @@ def check_session():
         return jsonify({"logged_in": True, "username": session['username']})
     return jsonify({"logged_in": False})
 
+@app.route('/like', methods=['POST'])
+def like_series():
+    if 'user_id' not in session:
+        return jsonify({"status": "error", "message": "Du måste logga in för att spara!"}), 401
+    data = request.json
+    title = data.get('title')
+    user_id = session['user_id']
+    conn = get_db()
+    try:
+        conn.execute("INSERT INTO liked_series (user_id, title) VALUES (?, ?)", (user_id, title))
+        conn.commit()
+        msg = "Sparad!"
+        status = "success"
+    except sqlite3.IntegrityError:
+        msg = "Redan sparad!"
+        status = "success"
+    finally:
+        conn.close()
+    return jsonify({"status": status, "message": msg})
 
-# --- CHAT ROUTE (Här väljer vi fil!) ---
 @app.route('/chat', methods=['POST'])
 def chat():
     data = request.json
     message = data.get('message', '')
-    selected_model = data.get('model', 'tfidf') # Standardval
+    selected_model = data.get('model', 'tfidf')
     
     recommendations = []
     intro = ""
 
-    # SWITCH-CASE FÖR MODELLERNA
     if selected_model == "tfidf":
         intro = "Här är resultat från TF-IDF (Nyckelord):"
         recommendations = tfidf_model.search(message)
-        
     elif selected_model == "nomic":
         intro = "Här är resultat från Nomic (Semantisk Sökning):"
         recommendations = nomic_model.search(message)
-        
     elif selected_model == "gemini":
         intro = "Här är vad Gemini tycker:"
         recommendations = gemini_model.search(message)
-        
+    elif selected_model == "hybrid":
+        intro = "Här är resultat från Hybrid-modellen (TF-IDF + Vector):"
+        recommendations = hybrid_model.search(message)    
     else:
-        intro = "Okänd modell."
+        intro = "Okänd modell vald."
         recommendations = []
 
     return jsonify({
-        "type": "json_recommendation",
+        "type": "json_recommendation", 
         "intro": intro,
         "data": recommendations
     })

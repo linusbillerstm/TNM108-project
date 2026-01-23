@@ -8,12 +8,11 @@ shows_context = []
 
 def init(df):
     global client, shows_context
-    # Hämta API-nyckeln från miljövariabel
-    api_key = os.environ.get("AIzaSyBNVnoRHvXyIgLb90Odx66sbV91ngN9I8I")
+    # HÄR ÄR DIN NYCKEL (Jag tog den från din uppladdade fil)
+    api_key = "AIzaSyBNVnoRHvXyIgLb90Odx66sbV91ngN9I8I" 
     
     if api_key:
         client = genai.Client(api_key=api_key)
-        # Förbered datan för prompten
         shows_context = df[['title', 'year', 'genre', 'storyline']].to_dict(orient='records')
         print("   [GEMINI] Redo.")
     else:
@@ -21,14 +20,18 @@ def init(df):
 
 def search(query, top_k=3):
     if not client:
-        return [{"title": "Fel", "year": 0, "reason": "Gemini API-nyckel saknas."}]
+        return [{"title": "Fel", "year": 0, "reason": "Gemini API-nyckel saknas.", "score": 0}]
 
     try:
-        # Prompten skickar med hela databasen som text
+        # Vi ber Gemini gissa hur bra matchningen är (Confidence Score)
         prompt = f"""
         Recommend {top_k} shows from this database based on: "{query}".
         Database: {json.dumps(shows_context)}
-        Return JSON array: [{{ "title": "...", "year": "...", "reason": "..." }}]
+        
+        Return JSON array: 
+        [{{ "title": "...", "year": "...", "reason": "...", "score": 95 }}]
+        
+        Where 'score' is an integer (0-100) representing how well it fits the user request.
         """
 
         response = client.models.generate_content(
@@ -38,4 +41,4 @@ def search(query, top_k=3):
         )
         return json.loads(response.text)
     except Exception as e:
-        return [{"title": "Error", "year": 0, "reason": str(e)}]
+        return [{"title": "Error", "year": 0, "reason": str(e), "score": 0}]

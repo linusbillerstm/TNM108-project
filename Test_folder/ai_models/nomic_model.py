@@ -2,6 +2,7 @@ import numpy as np
 import pandas as pd
 from sentence_transformers import SentenceTransformer
 from sklearn.metrics.pairwise import cosine_similarity
+import os
 
 # Globala variabler
 model = None
@@ -18,8 +19,11 @@ def init(df):
         # Ladda modellen (Samma som i din fil)
         model = SentenceTransformer("nomic-ai/nomic-embed-text-v1.5", trust_remote_code=True)
         
-        # Ladda dina sparade vektorer
-        embeddings = np.load("embeddings.npy")
+        # backa en mapp där embeddings.npy finns
+        current_folder = os.path.dirname(os.path.abspath(__file__))
+        root_folder = os.path.dirname(current_folder)
+        file_path = os.path.join(root_folder, "embeddings.npy")
+        embeddings = np.load(file_path)
         
     except Exception as e:
         print(f"   [NOMIC FEL] Kunde inte ladda: {e}")
@@ -46,7 +50,7 @@ def search(query, top_k=5):
         
         results.append({
             "title": row['title'],
-            "year": int(row['year']),
+            "year": str(row['year']),
             "reason": f"Semantisk matchning: {int(score*100)}%"
         })
         

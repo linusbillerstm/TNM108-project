@@ -3,7 +3,7 @@ import pandas as pd
 from sklearn.feature_extraction.text import CountVectorizer, TfidfTransformer
 from sklearn.metrics.pairwise import cosine_similarity
 from sentence_transformers import SentenceTransformer
-
+import os
 # Globala variabler
 model = None
 embeddings = None
@@ -27,7 +27,11 @@ def init(df):
     try:
         # 1. Ladda Nomic (Embeddings)
         model = SentenceTransformer("nomic-ai/nomic-embed-text-v1.5", trust_remote_code=True)
-        embeddings = np.load("embeddings.npy")
+        # backa en mapp där embeddings.npy finns
+        current_folder = os.path.dirname(os.path.abspath(__file__))
+        root_folder = os.path.dirname(current_folder)
+        file_path = os.path.join(root_folder, "embeddings.npy")
+        embeddings = np.load(file_path)
         
         # 2. Ladda TF-IDF (Samma logik som i din hybrid_test.py)
         # Egna stoppord för att filtrera bort brus
@@ -79,7 +83,7 @@ def search(query, top_k=3):
         row = df_ref.iloc[idx]
         results.append({
             "title": row['title'],
-            "year": int(row['year']),
+            "year": str(row['year']),
             "reason": f"Hybrid Match ({int(score*100)}% säkerhet) - Kombinerar ord och mening."
         })
         
