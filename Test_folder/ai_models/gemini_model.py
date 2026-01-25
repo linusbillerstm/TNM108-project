@@ -16,7 +16,7 @@ def init(df):
     
     if api_key:
         client = genai.Client(api_key=api_key)
-        shows_context = df[['title', 'year', 'genre', 'storyline']].to_dict(orient='records')
+        shows_context = df[['title', 'year', 'genre', 'storyline', 'imdb_rating']].to_dict(orient='records')
         print("   [GEMINI] Redo.")
     else:
         print("   [GEMINI] Ingen API-nyckel hittades.")
@@ -32,7 +32,7 @@ def search(query, top_k=3):
         Database: {json.dumps(shows_context)}
         
         Return JSON array: 
-        [{{ "title": "...", "year": "...", "reason": "...", "score": 95 }}]
+        [{{ "title": "...", "year": "...", "reason": "...", "score": 95, "rating": 0.1}}]
         
         Where 'score' is an integer (0-100) representing how well it fits the user request.
         """
