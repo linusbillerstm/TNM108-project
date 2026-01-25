@@ -50,8 +50,9 @@ def search(query, top_k=5):
         results.append({
             "title": row['title'],
             "year": str(row['year']),
-            "reason": f"Semantisk matchning: {int(score*100)}%"
-            "rating": row['imdb_rating']
+            "reason": f"Semantisk matchning: {int(score*100)}%",
+            "rating": row['imdb_rating'],
+            "score": int(score * 100)
         })
         
     return results

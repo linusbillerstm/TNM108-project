@@ -56,7 +56,7 @@ def search(query, top_k=5):
             "title": row['title'],
             "year": str(row['year']), # Konvertera till int för snyggare JSON
             "reason": f"Matchar nyckelord i: {str(row['genre'])}",
-            "score": score_percent
+            "score": score_percent,
             "rating": row['imdb_rating']
         })
     

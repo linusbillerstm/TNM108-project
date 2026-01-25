@@ -84,7 +84,8 @@ def search(query, top_k=3):
             "title": row['title'],
             "year": str(row['year']),
             "rating": row['imdb_rating'],
-            "reason": f"Hybrid Match ({int(score*100)}% säkerhet) - Kombinerar ord och mening."
+            "reason": f"Hybrid Match ({int(score*100)}% säkerhet) - Kombinerar ord och mening.",
+            "score": int(score * 100)
         })
     #sorterar baserat på IMDB ranking
     results.sort(key=lambda x: x['rating'], reverse=True)
