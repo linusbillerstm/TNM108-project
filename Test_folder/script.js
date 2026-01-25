@@ -1,90 +1,6 @@
 /* --- GLOBAL STATES --- */
-let currentUser = null;
 const chatContainer = document.getElementById('chatContainer');
 const userInput = document.getElementById('userInput');
-
-/* --- 1. SESSION & AUTH --- */
-window.onload = async function() {
-    const response = await fetch('/check_session');
-    const data = await response.json();
-    if (data.logged_in) {
-        setLoggedInState(data.username);
-    }
-};
-
-const loginModal = document.getElementById('loginModal');
-const registerModal = document.getElementById('registerModal');
-const openLoginBtn = document.getElementById('openLoginBtn');
-
-openLoginBtn.onclick = function() {
-    if (currentUser) logout();
-    else loginModal.style.display = "block";
-}
-
-document.querySelectorAll('.close').forEach(span => {
-    span.onclick = () => {
-        loginModal.style.display = "none";
-        registerModal.style.display = "none";
-    }
-});
-
-document.getElementById('switchToRegister').onclick = (e) => {
-    e.preventDefault(); loginModal.style.display = "none"; registerModal.style.display = "block";
-};
-document.getElementById('switchToLogin').onclick = (e) => {
-    e.preventDefault(); registerModal.style.display = "none"; loginModal.style.display = "block";
-};
-
-// Login Submit
-document.getElementById('loginForm').onsubmit = async (e) => {
-    e.preventDefault();
-    const data = Object.fromEntries(new FormData(e.target).entries());
-    const res = await fetch('/login', {
-        method: 'POST',
-        headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify(data)
-    });
-    const result = await res.json();
-    if (result.status === 'success') {
-        setLoggedInState(result.username);
-        loginModal.style.display = "none";
-    } else {
-        alert(result.message);
-    }
-};
-
-// Register Submit
-document.getElementById('registerForm').onsubmit = async (e) => {
-    e.preventDefault();
-    const data = Object.fromEntries(new FormData(e.target).entries());
-    const res = await fetch('/register', {
-        method: 'POST',
-        headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify(data)
-    });
-    const result = await res.json();
-    if (result.status === 'success') {
-        alert("Konto skapat! Logga in.");
-        registerModal.style.display = "none";
-        loginModal.style.display = "block";
-    } else {
-        alert(result.message);
-    }
-};
-
-async function logout() {
-    await fetch('/logout', { method: 'POST' });
-    currentUser = null;
-    openLoginBtn.innerHTML = "Log In";
-    document.getElementById('welcome-msg').innerText = "Hej! Logga in för att spara serier, eller fråga direkt.";
-    alert("Utloggad.");
-}
-
-function setLoggedInState(username) {
-    currentUser = username;
-    openLoginBtn.innerHTML = "Logga ut";
-    document.getElementById('welcome-msg').innerHTML = `Välkommen tillbaka, <b>${username}</b>! <br>Jag är redo att spara dina favoriter.`;
-}
 
 /* --- 2. CHAT & AI LOGIK --- */
 
@@ -188,12 +104,6 @@ function appendRecommendationCards(responsedata) {
         clone.querySelector('.year-text').innerText = `(${show.year})`;
         clone.querySelector('.rec-reason').innerText = show.reason;
 
-        // Lägg till klick-event på knappen
-        const btn = clone.querySelector('.like-btn');
-        btn.onclick = function() {
-            likeShow(show.title, btn);
-        };
-
         // Lägg till kortet i meddelandet
         contentDiv.appendChild(clone);
     });
@@ -202,26 +112,6 @@ function appendRecommendationCards(responsedata) {
     msgDiv.appendChild(contentDiv);
     chatContainer.appendChild(msgDiv);
     chatContainer.scrollTop = chatContainer.scrollHeight;
-}
-
-async function likeShow(title, btnElement) {
-    if (!currentUser) {
-        alert("Du måste logga in för att spara serier!");
-        return;
-    }
-    const res = await fetch('/like', {
-        method: 'POST',
-        headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify({ title: title })
-    });
-    const result = await res.json();
-    if (result.status === 'success') {
-        btnElement.innerText = "✅ Sparad";
-        btnElement.classList.add('saved'); // Använder CSS-klass nu
-        btnElement.disabled = true;
-    } else {
-        alert(result.message);
-    }
 }
 
 // Enter-tangent
