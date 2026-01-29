@@ -101,6 +101,7 @@ function appendRecommendationCards(responsedata) {
         badge.classList.add(scoreClass);
 
         clone.querySelector('.title-text').innerText = show.title;
+        clone.querySelector('.rating-text').innerText = `imdb rating: (${show.rating})`;
         clone.querySelector('.year-text').innerText = `(${show.year})`;
         clone.querySelector('.rec-reason').innerText = show.reason;
 

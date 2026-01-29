@@ -5,7 +5,7 @@ import random
 from flask import Flask, render_template, request, jsonify
 
 # --- IMPORTERA DINA NYA MODELLER ---
-from ai_models import tfidf_model, nomic_model, gemini_model, hybrid_model
+from ai_models import tfidf_model, nomic_model, gemini_model, hybrid_model, explainer_model
 
 # --- FIX 1: Ändra så Flask hittar CSS/JS i samma mapp ---
 app = Flask(__name__, template_folder='.', static_folder='.', static_url_path='')
@@ -28,6 +28,8 @@ def start_app():
         gemini_model.init(df)
         hybrid_model.init(df)
         
+        explainer_model.init()
+
         print("✅ Allt laddat och klart!")
     except Exception as e:
         # Skriv ut mer detaljerat felmeddelande
@@ -55,19 +57,29 @@ def chat():
     intro = ""
 
     if selected_model == "tfidf":
-        intro = "Här är resultat från TF-IDF (Nyckelord):"
-        recommendations = tfidf_model.search(message)
+        intro = "Här är resultat från TF-IDF (Med AI-analys):"
+        # 1. Hämta grund-resultat
+        raw_results = tfidf_model.search(message)
+        # 2. Skicka dem till explainer för att få snygga texter
+        recommendations = explainer_model.enrich_results(message, raw_results)
+        
     elif selected_model == "nomic":
-        intro = "Här är resultat från Nomic (Semantisk Sökning):"
-        recommendations = nomic_model.search(message)
+        intro = "Här är resultat från Nomic (Med AI-analys):"
+        raw_results = nomic_model.search(message)
+        recommendations = explainer_model.enrich_results(message, raw_results)
+        
+    elif selected_model == "hybrid":
+        intro = "Här är resultat från Hybrid-modellen (Med AI-analys):"
+        raw_results = hybrid_model.search(message)
+        recommendations = explainer_model.enrich_results(message, raw_results)
+        
     elif selected_model == "gemini":
         intro = "Här är vad Gemini tycker:"
+        # Gemini-modellen sköter sitt eget snack, så vi kör den som vanligt
         recommendations = gemini_model.search(message)
-    elif selected_model == "hybrid":
-        intro = "Här är resultat från Hybrid-modellen (TF-IDF + Vector):"
-        recommendations = hybrid_model.search(message)    
+
     else:
-        intro = "Okänd modell vald."
+        intro = "Okänd modell."
         recommendations = []
 
     return jsonify({

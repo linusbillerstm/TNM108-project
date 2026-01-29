@@ -44,4 +44,4 @@ def search(query, top_k=3):
         )
         return json.loads(response.text)
     except Exception as e:
-        return [{"title": "Error", "year": 0, "reason": str(e), "score": 0}]
+        return [{"title": "Error", "year": 0, "reason": str(e), "score": 0, "rating": 0}]

@@ -3,7 +3,7 @@ from sklearn.feature_extraction.text import CountVectorizer, TfidfTransformer
 from sklearn.metrics.pairwise import cosine_similarity
 import numpy as np
 
-# Globala variabler
+# globala variabler
 count_vectorizer = None
 tfidf_transformer = None
 tfidf_matrix = None
@@ -54,10 +54,10 @@ def search(query, top_k=5):
         row = df_ref.iloc[idx]
         results.append({
             "title": row['title'],
-            "year": str(row['year']), # Konvertera till int för snyggare JSON
-            "reason": f"Matchar nyckelord i: {str(row['genre'])}",
-            "score": score_percent,
-            "rating": row['imdb_rating']
+            "year": str(row['year']),
+            "rating": row['imdb_rating'],
+            "reason": "Matchar dina nyckelord i handling eller genre.",
+            "score": score_percent
         })
     
     return results
