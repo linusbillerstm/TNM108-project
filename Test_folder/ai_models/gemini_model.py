@@ -23,7 +23,7 @@ def init(df):
 
 def search(query, top_k=3):
     if not client:
-        return [{"title": "Fel", "year": 0, "reason": "Gemini API-nyckel saknas.", "score": 0}]
+        return [{"title": "Fel", "imdb_rating": "undefined", "year": 0, "reason": "Gemini API-nyckel saknas.", "score": 0}]
 
     try:
         # Vi ber Gemini gissa hur bra matchningen är (Confidence Score)
@@ -32,7 +32,7 @@ def search(query, top_k=3):
         Database: {json.dumps(shows_context)}
         
         Return JSON array: 
-        [{{ "title": "...", "year": "...", "reason": "...", "score": 95 }}]
+        [{{ "title": "...", "imdb_rating": "...", "year": "...", "reason": "...", "score": 95 }}]
         
         Where 'score' is an integer (0-100) representing how well it fits the user request.
         """
@@ -44,4 +44,4 @@ def search(query, top_k=3):
         )
         return json.loads(response.text)
     except Exception as e:
-        return [{"title": "Error", "year": 0, "reason": str(e), "score": 0}]
+        return [{"title": "Error", "imdb_rating": "undefined", "year": 0, "reason": str(e), "score": 0}]

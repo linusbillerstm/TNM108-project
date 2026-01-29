@@ -383,6 +383,13 @@ body {
     font-size: 1.1em;
 }
 
+.rating-text {
+    font-size: 0.8em;
+    color: #999;
+    font-weight: normal;
+    margin-left: 5px;
+}
+
 .year-text {
     font-size: 0.8em;
     color: #999;

@@ -52,7 +52,7 @@ def init(df):
     except Exception as e:
         print(f"   [HYBRID FEL] {e}")
 
-def search(query, top_k=3):
+def search(query, top_k=5):
     if model is None or tfidf_matrix is None: return []
 
     # --- 1. TF-IDF Poäng ---
@@ -67,7 +67,7 @@ def search(query, top_k=3):
 
     # --- 3. Hybrid Kombination (50/50) ---
     # Vi normaliserar båda så de får samma "vikt" (0 till 1)
-    final_scores = (0.5 * normalize(tfidf_scores)) + (0.5 * normalize(embed_scores))
+    final_scores = (0.4 * normalize(tfidf_scores)) + (0.6 * normalize(embed_scores))
     
     # Sortera och ta fram topp-resultat
     top_indices = np.argsort(final_scores)[-top_k:][::-1]
@@ -83,11 +83,11 @@ def search(query, top_k=3):
         results.append({
             "title": row['title'],
             "year": str(row['year']),
-            "rating": row['imdb_rating'],
+            "imdb_rating": str(row['imdb_rating']),
             "reason": f"Hybrid Match ({int(score*100)}% säkerhet) - Kombinerar ord och mening."
         })
     #sorterar baserat på IMDB ranking
-    results.sort(key=lambda x: x['rating'], reverse=True)
+    #results.sort(key=lambda x: x['imdb_rating'], reverse=True)
     
         
     if not results:
