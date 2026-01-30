@@ -12,7 +12,7 @@ app = Flask(__name__, template_folder='.', static_folder='.', static_url_path=''
 
 # --- INITIERING AV AI (Körs en gång vid start) ---
 def start_app():
-    print("⏳ Laddar dataset och AI-modeller...")
+    print("Laddar dataset och AI-modeller...")
     try:
         # 1. Läs in CSV-filen
         base_dir = os.path.dirname(os.path.abspath(__file__))
@@ -57,24 +57,24 @@ def chat():
     intro = ""
 
     if selected_model == "tfidf":
-        intro = "Här är resultat från TF-IDF (Med AI-analys):"
+        intro = "Här är resultat från TF-IDF modellen:"
         # 1. Hämta grund-resultat
         raw_results = tfidf_model.search(message)
         # 2. Skicka dem till explainer för att få snygga texter
         recommendations = explainer_model.enrich_results(message, raw_results)
         
     elif selected_model == "nomic":
-        intro = "Här är resultat från Nomic (Med AI-analys):"
+        intro = "Här är resultat från Nomic Modellen:"
         raw_results = nomic_model.search(message)
         recommendations = explainer_model.enrich_results(message, raw_results)
         
     elif selected_model == "hybrid":
-        intro = "Här är resultat från Hybrid-modellen (Med AI-analys):"
+        intro = "Här är resultat från Hybrid-modellen modellen:"
         raw_results = hybrid_model.search(message)
         recommendations = explainer_model.enrich_results(message, raw_results)
         
     elif selected_model == "gemini":
-        intro = "Här är vad Gemini tycker:"
+        intro = "Här är resultatetet från Gemini modellen:"
         # Gemini-modellen sköter sitt eget snack, så vi kör den som vanligt
         recommendations = gemini_model.search(message)
 
