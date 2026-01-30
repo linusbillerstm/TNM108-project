@@ -30,10 +30,10 @@ def start_app():
         
         explainer_model.init()
 
-        print("✅ Allt laddat och klart!")
+        print("Modeller laddade")
     except Exception as e:
         # Skriv ut mer detaljerat felmeddelande
-        print(f"❌ Kritiskt fel vid start av AI-modeller: {e}")
+        print(f"fel vid start av AI-modeller: {e}")
         import traceback
         traceback.print_exc()
 

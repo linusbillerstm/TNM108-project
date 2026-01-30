@@ -75,7 +75,7 @@ def search(query, top_k=3):
     results = []
     for idx in top_indices:
         score = final_scores[idx]
-        # Filtrera bort dåliga matchningar (t.ex. under 35% säkerhet)
+        
         if score < 0.35:
             continue
             
@@ -88,7 +88,7 @@ def search(query, top_k=3):
             "score": int(score * 100)
         })
     #sorterar baserat på IMDB ranking
-    results.sort(key=lambda x: x['rating'], reverse=True)
+    #results.sort(key=lambda x: x['rating'], reverse=True)
     
         
     if not results:

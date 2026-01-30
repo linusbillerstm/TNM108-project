@@ -27,7 +27,7 @@ def init(df):
     except Exception as e:
         print(f"   [NOMIC FEL] Kunde inte ladda: {e}")
 
-def search(query, top_k=5):
+def search(query, top_k=3):
     if model is None or embeddings is None: return []
 
     # lägg till prefixet som i din fil

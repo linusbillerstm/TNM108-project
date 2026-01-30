@@ -29,7 +29,7 @@ def init(df):
     tfidf_matrix = tfidf_transformer.fit_transform(count_matrix)
 
 
-def search(query, top_k=5):
+def search(query, top_k=3):
     """Samma söklogik, men returnerar en lista"""
     if count_vectorizer is None: return []
 
