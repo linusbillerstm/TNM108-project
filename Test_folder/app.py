@@ -4,25 +4,24 @@ import time
 import random
 from flask import Flask, render_template, request, jsonify
 
-# --- IMPORTERA DINA NYA MODELLER ---
+# importera modeller
 from ai_models import tfidf_model, nomic_model, gemini_model, hybrid_model, explainer_model
 
-# --- FIX 1: Ändra så Flask hittar CSS/JS i samma mapp ---
+# så att flask hittar CSS/JS 
 app = Flask(__name__, template_folder='.', static_folder='.', static_url_path='')
 
-# --- INITIERING AV AI (Körs en gång vid start) ---
+# initierar av modeller
 def start_app():
     print("Laddar dataset och AI-modeller...")
     try:
-        # 1. Läs in CSV-filen
         base_dir = os.path.dirname(os.path.abspath(__file__))
         csv_path = os.path.join(base_dir, 'sorted_shows.csv')
         df = pd.read_csv(csv_path)     
         
-        # Säkerställ att inga NaNs finns kvar
+        # tar bort NaNs
         df['combined_text'] = df['combined_text'].fillna('') 
         
-        # 2. Skicka datan till varje modell
+        # skicka data till varje modell
         tfidf_model.init(df)
         nomic_model.init(df)
         gemini_model.init(df)
@@ -30,18 +29,17 @@ def start_app():
         
         explainer_model.init()
 
-        print("Modeller laddade")
+        print("modeller laddade")
     except Exception as e:
-        # Skriv ut mer detaljerat felmeddelande
         print(f"fel vid start av AI-modeller: {e}")
         import traceback
         traceback.print_exc()
 
-# Kör initieringen direkt
+#initiering direkt
 with app.app_context():
     start_app()
 
-# --- ROUTES ---
+# routes 
 
 @app.route('/')
 def index():
@@ -58,24 +56,21 @@ def chat():
 
     if selected_model == "tfidf":
         intro = "Här är resultat från TF-IDF modellen:"
-        # 1. Hämta grund-resultat
         raw_results = tfidf_model.search(message)
-        # 2. Skicka dem till explainer för att få snygga texter
         recommendations = explainer_model.enrich_results(message, raw_results)
         
     elif selected_model == "nomic":
-        intro = "Här är resultat från Nomic Modellen:"
+        intro = "Här är resultat från Nomic modellen:"
         raw_results = nomic_model.search(message)
         recommendations = explainer_model.enrich_results(message, raw_results)
         
     elif selected_model == "hybrid":
-        intro = "Här är resultat från Hybrid-modellen modellen:"
+        intro = "Här är resultat från Hybrid modellen:"
         raw_results = hybrid_model.search(message)
         recommendations = explainer_model.enrich_results(message, raw_results)
         
     elif selected_model == "gemini":
         intro = "Här är resultatetet från Gemini modellen:"
-        # Gemini-modellen sköter sitt eget snack, så vi kör den som vanligt
         recommendations = gemini_model.search(message)
 
     else:

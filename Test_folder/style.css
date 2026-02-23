@@ -1,4 +1,4 @@
-/* --- RESET & GRUNDLÄGGANDE --- */
+
 * {
     box-sizing: border-box;
     margin: 0;
@@ -6,7 +6,7 @@
 }
 
 body {
-    background-color: #343541; /* Mörk bakgrund (ChatGPT-style) */
+    background-color: #343541;
     color: #ececf1;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     display: flex;
@@ -14,7 +14,7 @@ body {
     overflow: hidden;
 }
 
-/* --- SIDEBAR (VÄNSTER MENY) --- */
+/*sidomeny*/
 .sidebar {
     width: 260px;
     background-color: #202123;
@@ -22,13 +22,13 @@ body {
     flex-direction: column;
     padding: 10px;
     border-right: 1px solid #4d4d4f;
-    flex-shrink: 0; /* Förhindra att den krymper */
+    flex-shrink: 0; 
 }
 
 .sidebar-top {
     flex: 1;
 }
-
+/*New Chat*/
 .new-chat-btn {
     width: 100%;
     padding: 10px;
@@ -47,7 +47,7 @@ body {
 .new-chat-btn:hover {
     background-color: #2a2b32;
 }
-
+/*TV-show Recommender*/
 .history-list {
     margin-top: 20px;
 }
@@ -63,7 +63,7 @@ body {
 .history-item:hover {
     background-color: #2a2b32;
 }
-
+/*Log In*/
 .sidebar-bottom {
     border-top: 1px solid #4d4d4f;
     padding-top: 10px;
@@ -84,7 +84,7 @@ body {
     background-color: #343541;
 }
 
-/* --- HUVUD-CHATTEN --- */
+/*Huvud Chatten*/
 .main-chat {
     flex: 1;
     display: flex;
@@ -99,7 +99,7 @@ body {
     scroll-behavior: smooth;
 }
 
-/* Scrollbar styling */
+/*Scrollbar*/
 .chat-container::-webkit-scrollbar {
     width: 8px;
 }
@@ -108,41 +108,33 @@ body {
     border-radius: 4px;
 }
 
-/* MEDDELANDEN */
-.message {
-    display: flex;
-    padding: 25px;
-    gap: 20px;
-    line-height: 1.6;
-    border-bottom: 1px solid rgba(0,0,0,0.1);
-}
-
-/* --- MEDDELANDEN (Uppdaterad Design) --- */
+/*meddelanden*/
 .message {
     display: flex;
     padding: 20px;
     gap: 20px;
     line-height: 1.6;
-    margin: 15px 20px; /* Lite luft runt varje meddelande */
-    border-radius: 8px; /* Rundade hörn */
-    border: 1px solid transparent; /* Osynlig ram som standard */
+    margin: 15px 20px;
+    border-radius: 8px; 
+    border: 1px solid transparent; 
 }
 
-/* AI-meddelanden */
+/*AI-meddelanden*/
 .message.ai {
     background-color: #444654;
-    border: 1px solid #3e3f4b; /* En subtil kantlinje */
+    border: 1px solid #3e3f4b;
 }
 
-/* ANVÄNDAR-meddelanden - Nu med snygg ruta! */
+/*Användare-meddelanden*/
 .message.user {
-    background-color: #40414f; /* Samma färg som input-rutan */
-    border: 1px solid #565869; /* Ljusare kantlinje för kontrast */
+    background-color: #40414f; 
+    border: 1px solid #565869; 
     color: #fff;
 }
 
+/*avatar boxar*/
 .avatar {
-    width: 35px; /* Lite större avatar */
+    width: 35px; 
     height: 35px;
     border-radius: 4px;
     display: flex;
@@ -155,7 +147,7 @@ body {
 
 .avatar.user {
     background-color: #5436DA;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.2); /* Lite skugga på avataren */
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
 }
 
 .avatar.ai {
@@ -166,16 +158,16 @@ body {
 .message-content {
     max-width: 100%;
     width: 100%;
-    align-self: center; /* Centrera texten vertikalt mot avataren */
+    align-self: center;
 }
 
-/* --- INPUT OMRÅDET (LÄNGST NER) --- */
+/*input rutan, välja model o skicka knapp*/
 .input-area {
     position: absolute;
     bottom: 0;
     left: 0;
     width: 100%;
-    background-color: #343541; /* Täcker text bakom */
+    background-color: #343541;
     padding: 20px;
     display: flex;
     justify-content: center;
@@ -213,8 +205,8 @@ body {
     border: 1px solid #565869;
     border-radius: 4px;
     padding: 8px;
-    margin-right: 10px; /* Lite mellanrum till knappen */
-    margin-bottom: 5px; /* Justera så den linjerar snyggt */
+    margin-right: 10px;
+    margin-bottom: 5px; 
     cursor: pointer;
     font-family: inherit;
 }
@@ -236,6 +228,7 @@ body {
     background-color: #202123;
 }
 
+/* recommencation box*/
 .rec-card {
     background: rgba(255,255,255,0.05);
     padding: 15px;
@@ -251,7 +244,7 @@ body {
     background: rgba(255,255,255,0.08);
 }
 
-/* Poäng-rutan i hörnet */
+/*confidence score*/
 .score-badge {
     position: absolute;
     top: 0;
@@ -263,12 +256,11 @@ body {
     border-bottom-left-radius: 8px;
 }
 
-/* Färger för poäng (Dessa byter vi med JS) */
-.score-high { background-color: #10a37f; } /* Grön */
-.score-mid  { background-color: #eab308; } /* Gul */
-.score-low  { background-color: #ef4444; } /* Röd */
+/*färger beroende på confidence score*/
+.score-high { background-color: #10a37f; } 
+.score-mid  { background-color: #eab308; } 
+.score-low  { background-color: #ef4444; } 
 
-/* Layout inuti kortet */
 .rec-content {
     display: flex;
     justify-content: space-between;

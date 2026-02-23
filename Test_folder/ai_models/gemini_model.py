@@ -11,22 +11,22 @@ shows_context = []
 
 def init(df):
     global client, shows_context
-    # HÄR ÄR DIN NYCKEL (Jag tog den från din uppladdade fil)
+
     api_key = os.getenv("GEMINI_API_KEY")
     
     if api_key:
         client = genai.Client(api_key=api_key)
         shows_context = df[['title', 'year', 'genre', 'storyline', 'imdb_rating']].to_dict(orient='records')
-        print("   [GEMINI] Redo.")
+        print("gemini redo.")
     else:
-        print("   [GEMINI] Ingen API-nyckel hittades.")
+        print("Ingen API-nyckel hittades.")
 
 def search(query, top_k=3):
     if not client:
         return [{"title": "Fel", "year": 0, "reason": "Gemini API-nyckel saknas.", "score": 0}]
 
     try:
-        # Vi ber Gemini gissa hur bra matchningen är (Confidence Score)
+
         prompt = f"""
         Recommend {top_k} shows from this database based on: "{query}".
         Database: {json.dumps(shows_context)}

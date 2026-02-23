@@ -4,7 +4,7 @@ from google import genai
 from google.genai import types
 from dotenv import load_dotenv
 
-# Ladda miljövariabler (.env)
+
 load_dotenv()
 
 client = None
@@ -17,22 +17,22 @@ def init():
     if api_key:
         try:
             client = genai.Client(api_key=api_key)
-            print("   [EXPLAINER] Redo att förklara resultat.")
+            print("redo att förklara resultat.")
         except Exception as e:
-            print(f"   [EXPLAINER FEL] {e}")
+            print(f"fel vid initiering av explainer {e}")
     else:
-        print("   [EXPLAINER] Ingen API-nyckel hittades.")
+        print("explainer_model: Ingen API-nyckel hittades.")
 
 def enrich_results(query, recommendations):
     """
     Tar emot rå-resultat från TF-IDF/Hybrid och ber LLM förklara dem.
     """
-    # Om klienten inte funkar eller listan är tom, returnera originalet direkt
+
     if not client or not recommendations:
         return recommendations
 
     try:
-        # Hämta bara titlarna för att spara tid
+        # hämtar bara titlarna för att spara tid
         titles = [rec['title'] for rec in recommendations]
         
         prompt = f"""
@@ -54,10 +54,9 @@ def enrich_results(query, recommendations):
             config=types.GenerateContentConfig(response_mime_type="application/json")
         )
         
-        # Tolka svaret
         new_reasons = json.loads(response.text)
         
-        # Uppdatera original-listan med de nya texterna
+        # uppdatera med förklaringar
         for rec in recommendations:
             if rec['title'] in new_reasons:
                 rec['reason'] = new_reasons[rec['title']]
@@ -65,6 +64,5 @@ def enrich_results(query, recommendations):
         return recommendations
 
     except Exception as e:
-        print(f"   [EXPLAINER ERROR] Kunde inte generera förklaringar: {e}")
-        # Vid fel: Returnera originalen så användaren iaf får svar
+        print(f"kunde inte generera förklaringar {e}")
         return recommendations

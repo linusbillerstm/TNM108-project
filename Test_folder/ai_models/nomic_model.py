@@ -4,7 +4,7 @@ from sentence_transformers import SentenceTransformer
 from sklearn.metrics.pairwise import cosine_similarity
 import os
 
-# Globala variabler
+# globala variabler
 model = None
 embeddings = None
 df_ref = None
@@ -25,21 +25,20 @@ def init(df):
         embeddings = np.load(file_path)
         
     except Exception as e:
-        print(f"   [NOMIC FEL] Kunde inte ladda: {e}")
+        print(f"kunde inte ladda nomic: {e}")
 
 def search(query, top_k=3):
     if model is None or embeddings is None: return []
 
-    # lägg till prefixet som i din fil
     search_query = f"search_query: {query}"
     
-    # Skapa embedding för frågan
+    # skapa embedding för input
     query_embedding = model.encode([search_query])
     
-    # Jämför
+    # jämför 
     similarities = cosine_similarity(query_embedding, embeddings).flatten()
     
-    # Hämta topp-index
+    # hämta topp3
     top_indices = np.argsort(similarities)[-top_k:][::-1]
     
     results = []
