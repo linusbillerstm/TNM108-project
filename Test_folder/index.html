@@ -28,9 +28,7 @@
     <div class="main-chat">
         <div class="chat-container" id="chatContainer">
             <div class="message ai">
-                <div class="message-content" id="welcome-msg">
-                    Hej! Vad letar du efter för serie idag?
-                </div>
+                <div class="message-content" id="welcome-msg">Hej! Vad letar du efter för serie idag?</div>
             </div>
         </div>
 
@@ -49,6 +47,29 @@
             </div>
         </div>
     </div>
+
+    <template id="message-template">
+        <div class="message">
+            <div class="avatar"></div>
+            <div class="message-content"></div>
+        </div>
+    </template>
+
+    <template id="thinking-template">
+        <div class="message ai">
+            <div class="avatar ai">AI</div>
+            <div class="message-content">Thinking...</div>
+        </div>
+    </template>
+
+    <template id="recommendations-container-template">
+        <div class="message ai">
+            <div class="avatar ai">AI</div>
+            <div class="message-content">
+                <p class="intro-text" style="margin-bottom: 15px; color: #ccc;"></p>
+                </div>
+        </div>
+    </template>
 
     <template id="card-template">
         <div class="rec-card">

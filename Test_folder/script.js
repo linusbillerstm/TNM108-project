@@ -1,8 +1,6 @@
-/* --- GLOBAL STATES --- */
 const chatContainer = document.getElementById('chatContainer');
 const userInput = document.getElementById('userInput');
 
-/* --- 2. CHAT & AI LOGIK --- */
 
 function autoResize(textarea) {
     textarea.style.height = 'auto'; 
@@ -10,13 +8,22 @@ function autoResize(textarea) {
 }
 
 function appendMessage(text, sender) {
-    const div = document.createElement('div');
-    div.classList.add('message', sender);
-    const formattedText = text.replace(/\n/g, '<br>');
-    div.innerHTML = `
-        <div class="avatar ${sender}">${sender === 'user' ? 'U' : 'AI'}</div>
-        <div class="message-content">${formattedText}</div>
-    `;
+    // hämtar template
+    const template = document.getElementById('message-template');
+    const div = template.content.cloneNode(true).firstElementChild;
+
+    div.classList.add(sender);
+
+    // avatar
+    const avatar = div.querySelector('.avatar');
+    avatar.classList.add(sender);
+    avatar.innerText = sender === 'user' ? 'U' : 'AI';
+
+    // setting the message text
+    const content = div.querySelector('.message-content');
+    content.innerText = text;
+
+    // appendar 
     chatContainer.appendChild(div);
     chatContainer.scrollTop = chatContainer.scrollHeight;
 }
@@ -31,9 +38,10 @@ async function sendMessage() {
     userInput.value = "";
     userInput.style.height = 'auto';
 
-    const loadingDiv = document.createElement('div');
-    loadingDiv.classList.add('message', 'ai');
-    loadingDiv.innerHTML = `<div class="avatar ai">AI</div><div class="message-content">Thinking...</div>`;
+    // thinking template
+    const thinkingTemplate = document.getElementById('thinking-template');
+    const loadingDiv = thinkingTemplate.content.cloneNode(true).firstElementChild;
+
     chatContainer.appendChild(loadingDiv);
     chatContainer.scrollTop = chatContainer.scrollHeight;
 
@@ -45,7 +53,11 @@ async function sendMessage() {
         });
         
         const result = await response.json();
-        chatContainer.removeChild(loadingDiv);
+        
+        // tar bort "Thinking..."
+        if (loadingDiv.parentNode) {
+            chatContainer.removeChild(loadingDiv);
+        }
 
         if (result.type === 'json_recommendation') {
             appendRecommendationCards(result);
@@ -53,49 +65,39 @@ async function sendMessage() {
             appendMessage("Något gick fel.", 'ai');
         }
     } catch (error) {
-        chatContainer.removeChild(loadingDiv);
+        if (loadingDiv.parentNode) {
+            chatContainer.removeChild(loadingDiv);
+        }
         appendMessage("Error: Kunde inte nå servern.", 'ai');
     }
 }
 
-// --- DENNA FUNKTION ÄR NU HELT REN FRÅN HTML-STRÄNGAR ---
 function appendRecommendationCards(responsedata) {
     const shows = responsedata.data;
     const introText = responsedata.intro || "Här är resultaten:";
 
-    // 1. Skapa AI-meddelande container
-    const msgDiv = document.createElement('div');
-    msgDiv.classList.add('message', 'ai');
+    // container template
+    const containerTemplate = document.getElementById('recommendations-container-template');
+    const msgDiv = containerTemplate.content.cloneNode(true).firstElementChild;
     
-    const avatarDiv = document.createElement('div');
-    avatarDiv.classList.add('avatar', 'ai');
-    avatarDiv.innerText = 'AI';
+    // internal elements
+    const contentDiv = msgDiv.querySelector('.message-content');
+    const introP = msgDiv.querySelector('.intro-text');
+    
+    // intro text
+    introP.innerText = introText;
 
-    const contentDiv = document.createElement('div');
-    contentDiv.classList.add('message-content');
-    
-    // Intro text
-    const p = document.createElement('p');
-    p.innerText = introText;
-    p.style.marginBottom = "15px";
-    p.style.color = "#ccc";
-    contentDiv.appendChild(p);
-    
-    // 2. Hämta mallen från index.html
-    const template = document.getElementById('card-template');
+    // card template
+    const cardTemplate = document.getElementById('card-template');
 
-    // 3. Loopa och klona mallen för varje serie
     shows.forEach(show => {
-        // Klona innehållet i mallen
-        const clone = template.content.cloneNode(true);
+        const clone = cardTemplate.content.cloneNode(true);
         
-        // Räkna ut score-klass
         let score = show.score || 0;
         let scoreClass = 'score-high';
         if (score < 40) scoreClass = 'score-low';
         else if (score < 70) scoreClass = 'score-mid';
 
-        // Hitta elementen i klonen och fyll i data (INGEN HTML KOD HÄR!)
         const badge = clone.querySelector('.score-badge');
         badge.innerText = `${score}% Match`;
         badge.classList.add(scoreClass);
@@ -105,17 +107,14 @@ function appendRecommendationCards(responsedata) {
         clone.querySelector('.year-text').innerText = `(${show.year})`;
         clone.querySelector('.rec-reason').innerText = show.reason;
 
-        // Lägg till kortet i meddelandet
         contentDiv.appendChild(clone);
     });
 
-    msgDiv.appendChild(avatarDiv);
-    msgDiv.appendChild(contentDiv);
     chatContainer.appendChild(msgDiv);
     chatContainer.scrollTop = chatContainer.scrollHeight;
 }
 
-// Enter-tangent
+// Enter skickar meddelande, Shift+Enter ny rad
 userInput.addEventListener("keydown", function(event) {
     if (event.key === "Enter" && !event.shiftKey) {
         event.preventDefault();

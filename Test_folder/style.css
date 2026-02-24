@@ -84,7 +84,7 @@ body {
     background-color: #343541;
 }
 
-/*Huvud Chatten*/
+
 .main-chat {
     flex: 1;
     display: flex;
@@ -95,11 +95,11 @@ body {
 .chat-container {
     flex: 1;
     overflow-y: auto;
-    padding-bottom: 150px; /* Plats för input-rutan */
+    padding-bottom: 150px; 
     scroll-behavior: smooth;
 }
 
-/*Scrollbar*/
+/*scrollbar*/
 .chat-container::-webkit-scrollbar {
     width: 8px;
 }
@@ -119,13 +119,13 @@ body {
     border: 1px solid transparent; 
 }
 
-/*AI-meddelanden*/
+/*AI meddelanden*/
 .message.ai {
     background-color: #444654;
     border: 1px solid #3e3f4b;
 }
 
-/*Användare-meddelanden*/
+/*användare meddelanden*/
 .message.user {
     background-color: #40414f; 
     border: 1px solid #565869; 
@@ -159,6 +159,7 @@ body {
     max-width: 100%;
     width: 100%;
     align-self: center;
+    white-space: pre-wrap;
 }
 
 /*input rutan, välja model o skicka knapp*/
