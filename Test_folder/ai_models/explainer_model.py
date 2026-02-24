@@ -10,7 +10,6 @@ load_dotenv()
 client = None
 
 def init():
-    """Initierar bara klienten, behöver ingen dataframe"""
     global client
     api_key = os.getenv("GEMINI_API_KEY")
     
@@ -25,7 +24,7 @@ def init():
 
 def enrich_results(query, recommendations):
     """
-    Tar emot rå-resultat från TF-IDF/Hybrid och ber LLM förklara dem.
+    Tar emot resultat från TF-IDF/Hybrid och ber LLM förklara dem.
     """
 
     if not client or not recommendations:

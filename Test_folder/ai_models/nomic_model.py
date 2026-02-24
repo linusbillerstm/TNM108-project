@@ -10,7 +10,6 @@ embeddings = None
 df_ref = None
 
 def init(df):
-    """Körs av app.py vid start"""
     global model, embeddings, df_ref
     df_ref = df
     

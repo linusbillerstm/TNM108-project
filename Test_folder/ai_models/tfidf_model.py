@@ -14,7 +14,7 @@ def init(df):
     global count_vectorizer, tfidf_transformer, tfidf_matrix, df_ref
     df_ref = df
     
-    print("   [TF-IDF] Tränar vektoriserare...")
+    print("tränar vektoriserare för TF-IDF...")
     
     # tar bort fyllnadstext för att inte påverka sökningen
     common_words = list(CountVectorizer(stop_words='english').get_stop_words())
@@ -30,7 +30,6 @@ def init(df):
 
 
 def search(query, top_k=3):
-    """Samma söklogik, men returnerar en lista"""
     if count_vectorizer is None: return []
 
     # omvandla sökning
@@ -56,7 +55,7 @@ def search(query, top_k=3):
             "title": row['title'],
             "year": str(row['year']),
             "rating": row['imdb_rating'],
-            "reason": "Matchar dina nyckelord i handling eller genre.",
+            "reason": f"Matchning: {score_percent}%",
             "score": score_percent
         })
     
